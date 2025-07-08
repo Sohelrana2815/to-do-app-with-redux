@@ -25,11 +25,11 @@ const TasksCard = ({ task }: IProps) => {
           <span
             className={cn("px-2 py-1 rounded-full", {
               "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200":
-                task.priority === "Low",
+                task.priority === "low",
               "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200":
-                task.priority === "Medium",
+                task.priority === "medium",
               "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200":
-                task.priority === "High",
+                task.priority === "high",
             })}
           >
             {task.priority}
