@@ -17,7 +17,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -37,17 +37,18 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useAppDispatch } from "@/redux/hook";
 import { addTask } from "@/redux/features/task/taskSlice";
+import type { ITask } from "@/types";
 
 const AddTaskModal = () => {
   const form = useForm();
 
   const dispatch = useAppDispatch();
 
-  const onSubmit = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log("Form data:", data);
     // TODO: handle actual save logic
 
-    dispatch(addTask(data));
+    dispatch(addTask(data as ITask));
   };
 
   return (

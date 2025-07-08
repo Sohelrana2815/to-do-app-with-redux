@@ -1,29 +1,49 @@
 import type { RootState } from "@/redux/store";
 import type { ITask } from "@/types";
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
+import { createSlice, type PayloadAction, nanoid } from "@reduxjs/toolkit";
 interface InitialSate {
   tasks: ITask[];
   filter: "all" | "high" | "medium" | "low";
 }
 
 const initialState: InitialSate = {
-  tasks: [],
+  tasks: [
+    {
+      id: "1",
+      title: "create gitHub Repo",
+      description: "Hello world",
+      dueDate: "20-06-2025",
+      priority: "low",
+      isCompleted: false,
+    },
+  ],
   filter: "all",
+};
+
+type DraftTask = Pick<ITask, "title" | "description" | "dueDate" | "priority">;
+
+const createTask = (taskData: DraftTask): ITask => {
+  return { id: nanoid(), isCompleted: false, ...taskData };
 };
 
 const taskSlice = createSlice({
   name: "task",
   initialState,
   reducers: {
-    addTask: (state, action: PayloadAction<ITask>) => {
-      const id = uuidv4();
-      const taskData = {
-        ...action.payload,
-        id,
-        isCompleted: false,
-      };
+    addTask: (state, action: PayloadAction<DraftTask>) => {
+      const taskData = createTask(action.payload);
       state.tasks.push(taskData);
+    },
+    toggleCompleteState: (state, action: PayloadAction<string>) => {
+      console.log(action);
+      state.tasks.forEach((task) => {
+        if (task.id === action.payload) {
+          task.isCompleted = !task.isCompleted;
+        }
+      });
+    },
+    deleteTask: (state, action: PayloadAction<string>) => {
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
   },
 });
@@ -36,6 +56,6 @@ export const selectFilter = (state: RootState) => {
   return state.todo.filter;
 };
 
-export const { addTask } = taskSlice.actions;
+export const { addTask, toggleCompleteState, deleteTask } = taskSlice.actions;
 
 export default taskSlice.reducer;

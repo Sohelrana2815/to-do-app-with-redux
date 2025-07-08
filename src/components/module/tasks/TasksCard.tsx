@@ -3,16 +3,27 @@ import type { ITask } from "@/types";
 import { FiTrash2 } from "react-icons/fi";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { useAppDispatch } from "@/redux/hook";
+import {
+  deleteTask,
+  toggleCompleteState,
+} from "@/redux/features/task/taskSlice";
 interface IProps {
   task: ITask;
 }
 
 const TasksCard = ({ task }: IProps) => {
+  const dispatch = useAppDispatch();
   return (
     <div className="flex justify-between items-center bg-white dark:bg-gray-800 shadow rounded-lg p-4 mb-4 w-full max-w-xl mx-auto">
       {/* Left: Task details */}
       <div className="flex-1 pr-4">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <h3
+          className={cn(
+            "text-lg font-semibold text-gray-900 dark:text-gray-100",
+            task.isCompleted && "line-through"
+          )}
+        >
           {task.title}
         </h3>
         <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
@@ -20,7 +31,7 @@ const TasksCard = ({ task }: IProps) => {
         </p>
         <div className="mt-3 flex flex-wrap items-center text-xs text-gray-500 dark:text-gray-400">
           <span className="mr-4">
-            Due: <time>{task.dueDate}</time>
+            Due Date: <time>{task.dueDate}</time>
           </span>
           <span
             className={cn("px-2 py-1 rounded-full", {
@@ -39,8 +50,13 @@ const TasksCard = ({ task }: IProps) => {
 
       {/* Right: Checkbox and Delete */}
       <div className="flex items-center space-x-4">
-        <Checkbox className="cursor-pointer" />
+        <Checkbox
+          checked={task.isCompleted}
+          onClick={() => dispatch(toggleCompleteState(task.id))}
+          className="cursor-pointer"
+        />
         <Button
+          onClick={() => dispatch(deleteTask(task.id))}
           size="sm"
           variant={"ghost"}
           className="text-red-700 hover:text-red-800"
